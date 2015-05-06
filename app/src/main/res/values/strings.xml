@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Vestel JIRA Mobile</string>
+    <string name="action_settings">Settings</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="signin_hint">SIGN IN</string>
+    <string name="error_invalid_username">Please write valid username</string>
+    <string name="error_field_required">Username is required</string>
+    <string name="error_invalid_password">Please write valid password</string>
+    <string name="error_incorrect_password">Your password is wrong. Please check it !</string>
+
+
+</resources>
