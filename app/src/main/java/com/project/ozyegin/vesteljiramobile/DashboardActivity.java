@@ -11,13 +11,19 @@ import android.view.Window;
 
 import com.project.ozyegin.vesteljiramobile.adapter.TabsPagerAdapter;
 
+import org.apache.http.Header;
+
 public class DashboardActivity extends FragmentActivity implements ActionBar.TabListener {
 
+	private static String mUsername;
+	private static String mPassword;
+	private static Header mCookie;
 	private ViewPager viewPager;
 	private TabsPagerAdapter mAdapter;
 	private ActionBar actionBar;
 	// Tab titles
 	private String[] tabs = { "Assigned", "Reported", "Search" };
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +31,9 @@ public class DashboardActivity extends FragmentActivity implements ActionBar.Tab
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
         setContentView(R.layout.activity_dashboard);
 
-        String username = this.getIntent().getExtras().get("username").toString();
-        Log.e("BATU", "Taken Username : "+username);
+        mUsername 	= this.getIntent().getExtras().get("username").toString();
+		mPassword 	= this.getIntent().getExtras().get("password").toString();
+		mCookie		= (Header) this.getIntent().getExtras().get("cookie");
 
 		// Initilization
 		viewPager = (ViewPager) findViewById(R.id.pager);
@@ -76,4 +83,15 @@ public class DashboardActivity extends FragmentActivity implements ActionBar.Tab
 	public void onTabUnselected(Tab tab, FragmentTransaction ft) {
 	}
 
+	public static String getmUsername() {
+		return mUsername;
+	}
+
+	public static String getmPassword() {
+		return mPassword;
+	}
+
+	public static Header getmCookie() {
+		return mCookie;
+	}
 }
