@@ -140,8 +140,7 @@ public class ReportedToMeFragment extends Fragment {
                 convertView = inflater.inflate(R.layout.list_group, null);
             }
 
-            TextView lblListHeader = (TextView) convertView
-                    .findViewById(R.id.lblListHeader);
+            TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
             lblListHeader.setTypeface(null, Typeface.BOLD);
             lblListHeader.setText(headerTitle);
 
@@ -149,10 +148,20 @@ public class ReportedToMeFragment extends Fragment {
         }
 
         @Override
-        public View getChildView(int i, int i1, boolean b, View view, ViewGroup viewGroup) {
-            TextView textView = new TextView(ReportedToMeFragment.this.getActivity());
-            textView.setText(getChild(i, i1).toString());
-            return textView;
+        public View getChildView(int groupPosition, int childPosition, boolean b, View convertView, ViewGroup viewGroup) {
+            final String childText = (String) getChild(groupPosition, childPosition);
+
+            if (convertView == null) {
+                LayoutInflater infalInflater = (LayoutInflater) ReportedToMeFragment.this.getActivity().getApplicationContext()
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = infalInflater.inflate(R.layout.list_item, null);
+            }
+
+            TextView txtListChild = (TextView) convertView
+                    .findViewById(R.id.lblListItem);
+
+            txtListChild.setText(childText);
+            return convertView;
         }
 
         @Override
