@@ -1,8 +1,10 @@
 package com.project.ozyegin.vesteljiramobile;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +41,8 @@ public class ReportedToMeFragment extends Fragment {
         View rootView           = inflater.inflate(R.layout.fragment_reported, container, false);
         ExpandableListView elv  = (ExpandableListView) rootView.findViewById(R.id.mylist);
         elv.setAdapter(new SavedTabsListAdapter());
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
         getReportedIssues();
         return rootView;
     }
@@ -53,34 +57,59 @@ public class ReportedToMeFragment extends Fragment {
 
         try{
             HttpClient client 			= new DefaultHttpClient();
+            CookieStore cookieStore 	= new BasicCookieStore();
             HttpContext httpContext 	= new BasicHttpContext();
-            HttpGet get                 = new HttpGet("http://10.108.95.25/jira/rest/api/2/search?jql=assignee=batuhanka+and+status+in+(%22In+Progress%22)");
-            get.setHeader("Content-type", "application/json");
-            Header cookieHeader = DashboardActivity.getmCookie();
-            get.addHeader(cookieHeader);
-            HttpResponse res            = client.execute(get, httpContext);
-            is                          = res.getEntity().getContent();
-            Log.e("BATU", "Response Entity " + is.toString());
+            HttpPost post 				= new HttpPost("http://10.108.95.25/jira/rest/auth/1/session");
+            httpContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+            post.setHeader("Content-type", "application/json");
+
+            JSONObject obj = new JSONObject();
+            obj.put("username", mUsername);
+            obj.put("password", mPassword);
+
+            post.setEntity(new StringEntity(obj.toString(), "UTF-8"));
+            HttpResponse response    = client.execute(post, httpContext);
+            is                      = response.getEntity().getContent();
+
             try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
-                StringBuilder sb = new StringBuilder();
-                String line = null;
+                BufferedReader reader   = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+                StringBuilder sb        = new StringBuilder();
+                String line;
                 while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
+                    sb.append(line).append("\n");
                 }
                 is.close();
                 json = sb.toString();
             } catch (Exception e) {
-                Log.e("BATU", "Error converting buffer reader " + e.toString());
+                Log.e("Buffer Error", "Error converting result " + e.toString());
             }
 
             JSONObject jsonObject = new JSONObject(json);
-            Log.e("BATU","Result : "+jsonObject);
+            if(jsonObject.get("session") != null){
 
+                HttpGet get 				= new HttpGet("http://10.108.95.25/jira/rest/api/2/search?jql=assignee=yigitk+and+status+in+(%22In+Progress%22)");
+                get.setHeader("Content-type", "application/json");
+                get.addHeader(response.getFirstHeader("Set-Cookie"));
 
-        } catch (Exception e) {
-            Log.e("BATU", "Main Error " + e.toString());
-        }
+                HttpResponse res 		= client.execute(get, httpContext);
+                InputStream inputStream	= res.getEntity().getContent();
+                BufferedReader reader 	= new BufferedReader(new InputStreamReader(inputStream, "iso-8859-1"), 8);
+                StringBuilder sb 		= new StringBuilder();
+                String line 			= null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "\n");
+                }
+                is.close();
+                String json2 = sb.toString();
+                JSONObject jsonObject2 = new JSONObject(json2);
+                Log.e("BATU", "inner result "+jsonObject2);
+
+            }
+            else{
+                Log.e("BATU", "Login Failed");
+            }
+
+        }catch(Exception ignored){	Log.e("BATU", ignored.toString()); }
 
     }
 
@@ -152,9 +181,9 @@ public class ReportedToMeFragment extends Fragment {
             final String childText = (String) getChild(groupPosition, childPosition);
 
             if (convertView == null) {
-                LayoutInflater infalInflater = (LayoutInflater) ReportedToMeFragment.this.getActivity().getApplicationContext()
+                LayoutInflater inflater = (LayoutInflater) ReportedToMeFragment.this.getActivity().getApplicationContext()
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = infalInflater.inflate(R.layout.list_item, null);
+                convertView = inflater.inflate(R.layout.list_item, null);
             }
 
             TextView txtListChild = (TextView) convertView

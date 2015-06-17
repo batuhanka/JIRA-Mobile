@@ -11,25 +11,26 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import org.apache.http.Header;
-import org.apache.http.HeaderElement;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
-
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends ActionBarActivity  {
 
@@ -121,9 +122,8 @@ public class MainActivity extends ActionBarActivity  {
                 obj.put("password", password);
 
                 post.setEntity(new StringEntity(obj.toString(), "UTF-8"));
-                HttpResponse response = client.execute(post, httpContext);
-
-                is = response.getEntity().getContent();
+               HttpResponse response    = client.execute(post, httpContext);
+                is                      = response.getEntity().getContent();
 
                 try {
                     BufferedReader reader   = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
@@ -140,13 +140,14 @@ public class MainActivity extends ActionBarActivity  {
 
             JSONObject jsonObject = new JSONObject(json);
             if(jsonObject.get("session") != null){
+
                 Log.e("BATU", "Login Successful");
                 Intent intent   = new Intent(getBaseContext(), DashboardActivity.class);
                 intent.putExtra("username", username);
-                intent.putExtra("password", password);
-                intent.putExtra("cookie", (Serializable) response.getFirstHeader("Set-Cookie"));
+                intent.putExtra("password"  ,password);
                 startActivity(intent);
                 MainActivity.this.finish();
+
             }
             else{
                 Log.e("BATU", "Login Failed");
