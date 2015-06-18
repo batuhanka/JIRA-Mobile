@@ -26,6 +26,7 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -87,7 +88,7 @@ public class ReportedToMeFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(json);
             if(jsonObject.get("session") != null){
 
-                HttpGet get 				= new HttpGet("http://10.108.95.25/jira/rest/api/2/search?jql=assignee=yigitk+and+status+in+(%22In+Progress%22)");
+                HttpGet get 			= new HttpGet("http://10.108.95.25/jira/rest/api/2/search?jql=assignee=batuhanka+and+status+in+(%22Closed%22)");
                 get.setHeader("Content-type", "application/json");
                 get.addHeader(response.getFirstHeader("Set-Cookie"));
 
@@ -100,9 +101,11 @@ public class ReportedToMeFragment extends Fragment {
                     sb.append(line + "\n");
                 }
                 is.close();
-                String json2 = sb.toString();
-                JSONObject jsonObject2 = new JSONObject(json2);
-                Log.e("BATU", "inner result "+jsonObject2);
+                String jsonStr          = sb.toString();
+                JSONObject jsonIssues   = new JSONObject(jsonStr);
+
+                Log.e("BATU", jsonIssues.toString());
+
 
             }
             else{
