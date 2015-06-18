@@ -26,6 +26,7 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -87,7 +88,9 @@ public class ReportedToMeFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(json);
             if(jsonObject.get("session") != null){
 
-                HttpGet get 				= new HttpGet("http://10.108.95.25/jira/rest/api/2/search?jql=assignee=yigitk+and+status+in+(%22In+Progress%22)");
+                HttpGet get 			= new HttpGet("http://10.108.95.25/jira/rest/api/2/search?jql=assignee=batuhanka+and+status+in+(%22Open%22)");
+                //HttpGet get 			= new HttpGet("http://10.108.95.25/jira/rest/api/2/project");
+
                 get.setHeader("Content-type", "application/json");
                 get.addHeader(response.getFirstHeader("Set-Cookie"));
 
@@ -101,8 +104,13 @@ public class ReportedToMeFragment extends Fragment {
                 }
                 is.close();
                 String json2 = sb.toString();
-                JSONObject jsonObject2 = new JSONObject(json2);
-                Log.e("BATU", "inner result "+jsonObject2);
+
+                JSONObject jsonObject2  = new JSONObject(json2);
+                JSONArray jsonArray     = jsonObject2.getJSONArray("issues");
+                for(int i=0; i<jsonArray.length(); i++){
+                    Log.e("BATU",jsonArray.getJSONObject(i).get("key").toString());
+                }
+                //Log.e("BATU", "inner result "+jsonArray.length());
 
             }
             else{
