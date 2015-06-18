@@ -109,6 +109,7 @@ public class ReportedToMeFragment extends Fragment {
                 JSONArray jsonArray     = jsonObject2.getJSONArray("issues");
                 for(int i=0; i<jsonArray.length(); i++){
                     Log.e("BATU",jsonArray.getJSONObject(i).get("key").toString());
+
                 }
                 //Log.e("BATU", "inner result "+jsonArray.length());
 
