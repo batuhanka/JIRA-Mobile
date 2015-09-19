@@ -142,7 +142,6 @@ public class ReportedToMeFragment extends Fragment {
         }
 
 
-
         public List<IssueModel> getmResults() {
             return mResults;
         }
