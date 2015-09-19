@@ -2,6 +2,7 @@ package com.project.ozyegin.vesteljiramobile;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+
+import com.project.ozyegin.vesteljiramobile.model.IssueModel;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -32,23 +35,28 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ReportedToMeFragment extends Fragment {
+
+    public static List<IssueModel> results;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View rootView           = inflater.inflate(R.layout.fragment_reported, container, false);
         ExpandableListView elv  = (ExpandableListView) rootView.findViewById(R.id.mylist);
-        elv.setAdapter(new SavedTabsListAdapter());
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        getReportedIssues();
+        results = getReportedIssues();
+        elv.setAdapter(new SavedTabsListAdapter(results));
+
         return rootView;
     }
 
-    private void getReportedIssues() {
+    private List<IssueModel> getReportedIssues() {
 
         String mUsername = DashboardActivity.getmUsername();
         String mPassword = DashboardActivity.getmPassword();
@@ -88,8 +96,8 @@ public class ReportedToMeFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(json);
             if(jsonObject.get("session") != null){
 
-                HttpGet get 			= new HttpGet("http://10.108.95.25/jira/rest/api/2/search?jql=assignee=batuhanka+and+status+in+(%22Open%22)");
-                //HttpGet get 			= new HttpGet("http://10.108.95.25/jira/rest/api/2/project");
+                String reportedToMeStr  = "http://10.108.95.25/jira/rest/api/2/search?jql=reporter="+mUsername+"+and+status+in+(%22Open%22%2C%22In%20Progress%22)";
+                HttpGet get 			= new HttpGet(reportedToMeStr);
 
                 get.setHeader("Content-type", "application/json");
                 get.addHeader(response.getFirstHeader("Set-Cookie"));
@@ -104,27 +112,44 @@ public class ReportedToMeFragment extends Fragment {
                 }
                 is.close();
                 String json2 = sb.toString();
-
                 JSONObject jsonObject2  = new JSONObject(json2);
                 JSONArray jsonArray     = jsonObject2.getJSONArray("issues");
+                List<IssueModel> issues = new ArrayList<IssueModel>();
                 for(int i=0; i<jsonArray.length(); i++){
-                    Log.e("BATU",jsonArray.getJSONObject(i).get("key").toString());
+                    String key  = jsonArray.getJSONObject(i).get("key").toString();
+                    String id   = jsonArray.getJSONObject(i).get("id").toString();
+                    IssueModel issueModel = new IssueModel(id, key);
+                    issues.add(issueModel);
 
                 }
-                //Log.e("BATU", "inner result "+jsonArray.length());
-
+                //Log.e("BATU", "result "+issues);
+                return issues;
             }
             else{
                 Log.e("BATU", "Login Failed");
             }
 
         }catch(Exception ignored){	Log.e("BATU", ignored.toString()); }
-
+        return null;
     }
 
     public class SavedTabsListAdapter extends BaseExpandableListAdapter {
 
-        private String[] groups = { "People Names", "Dog Names", "Cat Names", "Fish Names" };
+        private List<IssueModel> mResults;
+        public SavedTabsListAdapter(List<IssueModel> issues){
+            this.mResults = issues;
+            Log.e("BATU", "mResults :  "+mResults);
+        }
+
+
+
+        public List<IssueModel> getmResults() {
+            return mResults;
+        }
+
+
+        private String[] groups = { "Showstopper", "High", "Medium", "Low" };
+
 
         private String[][] children = {
                 { "Arnold", "Barry", "Chuck", "David" },
@@ -132,6 +157,18 @@ public class ReportedToMeFragment extends Fragment {
                 { "Fluffy", "Snuggles" },
                 { "Goldy", "Bubbles" }
         };
+
+/****** TODO: Array will be converted to two dimensional String[][] array
+        private String[][] children = getChildrenIssues(mResults);
+
+        private String[][] getChildrenIssues(List<IssueModel> mResults) {
+            String[][] children =   {  { "Arnold", "Barry", "Chuck", "David" },
+                    { "Ace", "Bandit", "Cha-Cha", "Deuce" },
+                    { "Fluffy", "Snuggles" },
+                    { "Goldy", "Bubbles" }  };
+            return children;
+        }
+*******/
 
         @Override
         public int getGroupCount() {
@@ -195,9 +232,7 @@ public class ReportedToMeFragment extends Fragment {
                 convertView = inflater.inflate(R.layout.list_item, null);
             }
 
-            TextView txtListChild = (TextView) convertView
-                    .findViewById(R.id.lblListItem);
-
+            TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
             txtListChild.setText(childText);
             return convertView;
         }

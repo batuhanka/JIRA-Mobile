@@ -17,7 +17,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:text="batuhanka" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -31,7 +32,8 @@
         android:layout_alignEnd="@+id/username_field"
         android:layout_alignParentEnd="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="30dp"
+        android:text="150201036" />
 
     <Button
         android:layout_width="wrap_content"
