@@ -7,10 +7,12 @@ public class IssueModel {
 
     private String issueId;
     private String issueKey;
+    private String priority;
     
-    public IssueModel(String issueId, String issueKey){
+    public IssueModel(String issueId, String issueKey, String priority){
         this.issueId    = issueId;
         this.issueKey   = issueKey;
+        this.priority   = priority;
     }
 
     public String getIssueId() {
@@ -27,5 +29,13 @@ public class IssueModel {
 
     public void setIssueKey(String issueKey) {
         this.issueKey = issueKey;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
     }
 }

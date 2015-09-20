@@ -36,6 +36,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -50,16 +51,28 @@ public class ReportedToMeFragment extends Fragment {
         ExpandableListView elv  = (ExpandableListView) rootView.findViewById(R.id.mylist);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        results = getReportedIssues();
-        elv.setAdapter(new SavedTabsListAdapter(results));
+        getReportedIssues();
+        List<String> headers = new ArrayList<String>();
+        headers.add("Showstopper");
+        headers.add("High");
+        headers.add("Medium");
+        headers.add("Low");
+        HashMap<String, List<String>> children = new HashMap<String, List<String>>();
+        List<String> temp = new ArrayList<String>();
+        for(IssueModel issueModel : results){
+            temp.add(issueModel.getIssueKey());
+        }
+        children.put("Showstopper", temp);
+        elv.setAdapter(new SavedTabsListAdapter(getActivity().getApplicationContext(), headers, children));
 
         return rootView;
     }
 
-    private List<IssueModel> getReportedIssues() {
+    private HashMap<String, List<IssueModel>> getReportedIssues() {
 
-        String mUsername = DashboardActivity.getmUsername();
-        String mPassword = DashboardActivity.getmPassword();
+        String mUsername                            = DashboardActivity.getmUsername();
+        String mPassword                            = DashboardActivity.getmPassword();
+        HashMap<String, List<IssueModel>> issues    = new HashMap<String, List<IssueModel>>();
 
         String json = "";
         InputStream is;
@@ -114,14 +127,22 @@ public class ReportedToMeFragment extends Fragment {
                 String json2 = sb.toString();
                 JSONObject jsonObject2  = new JSONObject(json2);
                 JSONArray jsonArray     = jsonObject2.getJSONArray("issues");
-                List<IssueModel> issues = new ArrayList<IssueModel>();
+
+
+
+                /**** TODO: convert list to hash map
+                List<IssueModel> items  = new ArrayList<IssueModel>();
                 for(int i=0; i<jsonArray.length(); i++){
-                    String key  = jsonArray.getJSONObject(i).get("key").toString();
-                    String id   = jsonArray.getJSONObject(i).get("id").toString();
-                    IssueModel issueModel = new IssueModel(id, key);
-                    issues.add(issueModel);
+                    String key      = jsonArray.getJSONObject(i).get("key").toString();
+                    String id       = jsonArray.getJSONObject(i).get("id").toString();
+                    String priority = jsonArray.getJSONObject(i).getJSONObject("fields").getJSONObject("priority").get("name").toString();
+                    IssueModel item = new IssueModel(id, key, priority);
+                    items.add(item);
 
                 }
+                *********/
+
+
                 //Log.e("BATU", "result "+issues);
                 return issues;
             }
@@ -135,86 +156,82 @@ public class ReportedToMeFragment extends Fragment {
 
     public class SavedTabsListAdapter extends BaseExpandableListAdapter {
 
-        private List<IssueModel> mResults;
-        public SavedTabsListAdapter(List<IssueModel> issues){
-            this.mResults = issues;
-            Log.e("BATU", "mResults :  "+mResults);
+
+        private Context _context;
+        private List<String> _listDataHeader; // header titles
+        // child data in format of header title, child title
+        private HashMap<String, List<String>> _listDataChild;
+
+        public SavedTabsListAdapter(Context context, List<String> listDataHeader, HashMap<String, List<String>> listChildData) {
+            this._context = context;
+
+            this._listDataHeader = listDataHeader;
+            this._listDataChild = listChildData;
         }
 
-
-        public List<IssueModel> getmResults() {
-            return mResults;
+        @Override
+        public Object getChild(int groupPosition, int childPosititon) {
+            return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+                    .get(childPosititon);
         }
 
-
-        private String[] groups = { "Showstopper", "High", "Medium", "Low" };
-
-
-        private String[][] children = {
-                { "Arnold", "Barry", "Chuck", "David" },
-                { "Ace", "Bandit", "Cha-Cha", "Deuce" },
-                { "Fluffy", "Snuggles" },
-                { "Goldy", "Bubbles" }
-        };
-
-/****** TODO: Array will be converted to two dimensional String[][] array
-        private String[][] children = getChildrenIssues(mResults);
-
-        private String[][] getChildrenIssues(List<IssueModel> mResults) {
-            String[][] children =   {  { "Arnold", "Barry", "Chuck", "David" },
-                    { "Ace", "Bandit", "Cha-Cha", "Deuce" },
-                    { "Fluffy", "Snuggles" },
-                    { "Goldy", "Bubbles" }  };
-            return children;
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {
+            return childPosition;
         }
-*******/
+
+        @Override
+        public View getChildView(int groupPosition, final int childPosition,
+                                 boolean isLastChild, View convertView, ViewGroup parent) {
+
+            final String childText = (String) getChild(groupPosition, childPosition);
+
+            if (convertView == null) {
+                LayoutInflater infalInflater = (LayoutInflater) this._context
+                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = infalInflater.inflate(R.layout.list_item, null);
+            }
+
+            TextView txtListChild = (TextView) convertView
+                    .findViewById(R.id.lblListItem);
+
+            txtListChild.setText(childText);
+            return convertView;
+        }
+
+        @Override
+        public int getChildrenCount(int groupPosition) {
+            return this._listDataChild.get(this._listDataHeader.get(groupPosition))
+                    .size();
+        }
+
+        @Override
+        public Object getGroup(int groupPosition) {
+            return this._listDataHeader.get(groupPosition);
+        }
 
         @Override
         public int getGroupCount() {
-            return groups.length;
+            return this._listDataHeader.size();
         }
 
         @Override
-        public int getChildrenCount(int i) {
-            return children[i].length;
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
         }
 
         @Override
-        public Object getGroup(int i) {
-            return groups[i];
-        }
-
-        @Override
-        public Object getChild(int i, int i1) {
-            return children[i][i1];
-        }
-
-        @Override
-        public long getGroupId(int i) {
-            return i;
-        }
-
-        @Override
-        public long getChildId(int i, int i1) {
-            return i1;
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
-
-        @Override
-        public View getGroupView(int groupPosition, boolean b, View convertView, ViewGroup viewGroup) {
-
+        public View getGroupView(int groupPosition, boolean isExpanded,
+                                 View convertView, ViewGroup parent) {
             String headerTitle = (String) getGroup(groupPosition);
             if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) ReportedToMeFragment.this.getActivity().getApplicationContext()
+                LayoutInflater infalInflater = (LayoutInflater) this._context
                         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.list_group, null);
+                convertView = infalInflater.inflate(R.layout.list_group, null);
             }
 
-            TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+            TextView lblListHeader = (TextView) convertView
+                    .findViewById(R.id.lblListHeader);
             lblListHeader.setTypeface(null, Typeface.BOLD);
             lblListHeader.setText(headerTitle);
 
@@ -222,24 +239,15 @@ public class ReportedToMeFragment extends Fragment {
         }
 
         @Override
-        public View getChildView(int groupPosition, int childPosition, boolean b, View convertView, ViewGroup viewGroup) {
-            final String childText = (String) getChild(groupPosition, childPosition);
-
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) ReportedToMeFragment.this.getActivity().getApplicationContext()
-                        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.list_item, null);
-            }
-
-            TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
-            txtListChild.setText(childText);
-            return convertView;
+        public boolean hasStableIds() {
+            return false;
         }
 
         @Override
-        public boolean isChildSelectable(int i, int i1) {
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
             return true;
         }
+
 
     }
 
