@@ -13,7 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.project.ozyegin.vesteljiramobile.model.IssueModel;
 
@@ -43,7 +45,7 @@ import java.util.Set;
 
 public class ReportedToMeFragment extends Fragment {
 
-    public static List<IssueModel> results;
+    private List<IssueModel> results;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -58,6 +60,7 @@ public class ReportedToMeFragment extends Fragment {
         elv.setAdapter(new SavedTabsListAdapter(getActivity().getApplicationContext(), headers, results ));
         return rootView;
     }
+
 
     private HashMap<String, List<String>> getReportedIssues() {
 
@@ -100,7 +103,7 @@ public class ReportedToMeFragment extends Fragment {
             JSONObject jsonObject = new JSONObject(json);
             if(jsonObject.get("session") != null){
 
-                String reportedToMeStr  = "http://10.108.95.25/jira/rest/api/2/search?jql=reporter="+mUsername+"+and+status+in+(%22Open%22%2C%22In%20Progress%22)";
+                String reportedToMeStr  = "http://10.108.95.25/jira/rest/api/2/search?jql=reporter="+mUsername+"+and+resolution=unresolved";
                 HttpGet get 			= new HttpGet(reportedToMeStr);
 
                 get.setHeader("Content-type", "application/json");
@@ -132,7 +135,6 @@ public class ReportedToMeFragment extends Fragment {
                         templist.add(key);
                         issues.put(priority, templist);
                     }
-
                 }
 
                 return issues;
@@ -180,8 +182,17 @@ public class ReportedToMeFragment extends Fragment {
             }
 
             TextView txtListChild = (TextView) convertView.findViewById(R.id.lblListItem);
-
             txtListChild.setText(childText);
+
+            txtListChild.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    TextView textView = (TextView) v;
+                    Toast.makeText(getActivity().getApplicationContext(), "Item : " + textView.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                }
+            });
+
             return convertView;
         }
 
@@ -213,9 +224,20 @@ public class ReportedToMeFragment extends Fragment {
                 convertView = infalInflater.inflate(R.layout.list_group, null);
             }
 
-            TextView lblListHeader = (TextView) convertView.findViewById(R.id.lblListHeader);
+            TextView lblListHeader  = (TextView)    convertView.findViewById(R.id.lblListHeader);
+            ImageView headerImage   = (ImageView)   convertView.findViewById(R.id.headerImage);
+
             lblListHeader.setTypeface(null, Typeface.BOLD);
             lblListHeader.setText(headerTitle);
+
+            if (headerTitle.toLowerCase().matches("showstopper"))
+                headerImage.setImageResource(R.drawable.showstopper);
+            if(headerTitle.toLowerCase().matches("high"))
+                headerImage.setImageResource(R.drawable.high);
+            if(headerTitle.toLowerCase().matches("medium"))
+                headerImage.setImageResource(R.drawable.medium);
+            if(headerTitle.toLowerCase().matches("low"))
+                headerImage.setImageResource(R.drawable.low);
 
             return convertView;
         }
