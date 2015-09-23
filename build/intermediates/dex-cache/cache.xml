@@ -2,11 +2,18 @@
 <items version="2" >
 
     <item
-        jar="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\classes.jar"
+        jar="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\jars\classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="2c91c949a45a21cdecf26e03951e46c7beec9ad8">
-        <dex dex="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\pre-dexed\debug\classes-6208ec47e87f7699c4abd0e2092c09808e3c4983.jar" />
+        <dex dex="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\pre-dexed\debug\classes-abb6e08ed217c382c80996967a471959dd60f23f.jar" />
+    </item>
+    <item
+        jar="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\jars\classes.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
+        <dex dex="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\pre-dexed\debug\classes-2b08a4fc1dc939015bfa64ac97046cb8b555e156.jar" />
     </item>
     <item
         jar="C:\Users\Batuhan\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.3\support-annotations-21.0.3.jar"
@@ -16,25 +23,18 @@
         <dex dex="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-6b879a128445a34c36b3791f9edf14f5675fd430.jar" />
     </item>
     <item
-        jar="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\libs\internal_impl-21.0.3.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
-        <dex dex="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-f2a93b87d2b18f6782830de5e0a4fe9a51940f3f.jar" />
-    </item>
-    <item
-        jar="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\21.0.3\classes.jar"
-        jumboMode="false"
-        revision="21.1.2"
-        sha1="81d42bf983a8741f4888a6e333e454e4a5e0eeb7">
-        <dex dex="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\pre-dexed\debug\classes-454669f25184ab1071480058e2e5020efa3f0b1a.jar" />
-    </item>
-    <item
-        jar="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.5.87\classes.jar"
+        jar="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.5.87\jars\classes.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="dd9247ea0fabe8ee479638c4b4a23e93752be256">
-        <dex dex="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\pre-dexed\debug\classes-64f3293bc0ce3f57b30901405a233b80dbcc59dd.jar" />
+        <dex dex="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\pre-dexed\debug\classes-488a150d6b1172ad21f55692ddb5a8d5933b13e0.jar" />
+    </item>
+    <item
+        jar="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\jars\libs\internal_impl-21.0.3.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="01ec05bfbafcc07646ba813000bf2ef11742dd03">
+        <dex dex="C:\Users\Batuhan\AndroidStudioProjects\vestel-jira-mobile-application-latest\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-221ba8aa7e4259ba44940c33400e8fdac969f8bb.jar" />
     </item>
 
 </items>
