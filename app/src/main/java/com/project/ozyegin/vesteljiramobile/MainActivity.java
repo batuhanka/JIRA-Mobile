@@ -1,6 +1,8 @@
 package com.project.ozyegin.vesteljiramobile;
 
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -51,7 +53,6 @@ public class MainActivity extends ActionBarActivity  {
         mSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 attemptLogin();
             }
         });
@@ -61,10 +62,7 @@ public class MainActivity extends ActionBarActivity  {
 
         String username = mUsernameView.getText().toString();
         String password = mPasswordView.getText().toString();
-
-        Log.e("BATU", username + " : " + password);
-
-        mAuthTask = new UserLoginTask(username, password);
+        mAuthTask = new UserLoginTask(username, password, this);
         mAuthTask.execute((Void) null);
     }
 
@@ -72,21 +70,38 @@ public class MainActivity extends ActionBarActivity  {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+    public class UserLoginTask extends AsyncTask<Void, Integer, Boolean> {
 
         private final String mUsername;
         private final String mPassword;
+        private ProgressDialog loadingDialog;
+        private Activity mActivity;
 
-        UserLoginTask(String username, String password) {
+        UserLoginTask(String username, String password, Activity activity) {
             mUsername = username;
             mPassword = password;
+            mActivity = activity;
+            loadingDialog = new ProgressDialog(mActivity);
+            loadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            loadingDialog.setMessage("Authenticating... Please wait...");
+            loadingDialog.setCancelable(true);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            loadingDialog.show();
         }
 
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
+                int i=0;
+                while(i <= 10) {
+                    // Simulate network access.
+                    Thread.sleep(1000);
+                    publishProgress(i*4);
+                    i++;
+                }
             } catch (InterruptedException e) {
                 return false;
             }
@@ -96,7 +111,14 @@ public class MainActivity extends ActionBarActivity  {
         }
 
         @Override
+        protected void onProgressUpdate(Integer... values) {
+            loadingDialog.setProgress(values[0]);
+        }
+
+        @Override
         protected void onPostExecute(final Boolean success) {
+            loadingDialog.hide();
+            loadingDialog.dismiss();
             mAuthTask = null;
         }
 
