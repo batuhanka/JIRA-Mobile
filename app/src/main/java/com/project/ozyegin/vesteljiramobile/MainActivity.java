@@ -36,6 +36,9 @@ import java.util.Map;
 
 public class MainActivity extends ActionBarActivity  {
 
+
+
+
     public EditText mUsernameView;
     public EditText mPasswordView;
     public Button mSignInButton;
@@ -98,7 +101,7 @@ public class MainActivity extends ActionBarActivity  {
                 int i=0;
                 while(i <= 10) {
                     // Simulate network access.
-                    Thread.sleep(1000);
+                    Thread.sleep(700);
                     publishProgress(i*4);
                     i++;
                 }
