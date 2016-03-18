@@ -178,7 +178,10 @@ public class MainActivity extends ActionBarActivity  {
                 Log.e("BATU", "Login Failed");
             }
 
-        }catch(Exception ignored){	Log.e("BATU", ignored.toString()); }
+        }catch(Exception ignored){
+               Log.e("BATU", "Please check your VPN connections");
+               Log.e("BATU", ignored.toString());
+           }
        }
     }
 }
